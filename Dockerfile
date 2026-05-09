@@ -13,4 +13,7 @@ COPY .env.example .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Force Python to run unbuffered so logs appear immediately
+ENV PYTHONUNBUFFERED=1
+
 CMD ["python", "main.py"]
