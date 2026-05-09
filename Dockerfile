@@ -9,6 +9,7 @@ WORKDIR /app
 
 COPY main.py .
 COPY requirements.txt .
+COPY .env.example .
 
 RUN pip install --no-cache-dir -r requirements.txt
 

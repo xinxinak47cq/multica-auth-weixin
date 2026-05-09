@@ -12,15 +12,19 @@ import os
 import hmac
 import hashlib
 from datetime import datetime
+from dotenv import load_dotenv
 
-# Configuration - customize these values for your environment
-CONTAINER_NAME = "multica-backend-1"
-TARGET_EMAIL = "YOUR_EMAIL@example.com"  # Replace with your email
-WEBHOOK_URL = "http://YOUR_WEBHOOK_HOST:8644/webhooks/verification-monitor"
-WEBHOOK_SECRET = "your-webhook-secret-here"  # Replace with your secret
-SENT_FILE = "/tmp/sent_codes.json"
+# Load .env file
+load_dotenv()
 
-# Log pattern: [DEV] Verification code for YOUR_EMAIL@example.com: 123456
+# Configuration from environment variables
+CONTAINER_NAME = os.getenv("CONTAINER_NAME", "multica-backend-1")
+TARGET_EMAIL = os.getenv("TARGET_EMAIL", "")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL", "")
+WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "")
+SENT_FILE = os.getenv("SENT_FILE", "/tmp/sent_codes.json")
+
+# Log pattern: [DEV] Verification code for <email>: 123456
 PATTERN = re.compile(r'\[DEV\] Verification code for ' + re.escape(TARGET_EMAIL) + r': (\d+)')
 
 def load_sent_codes():
@@ -83,6 +87,11 @@ def send_to_wechat(code):
 
 def monitor_logs():
     """Monitor Docker logs"""
+    if not TARGET_EMAIL or not WEBHOOK_URL or not WEBHOOK_SECRET:
+        print("Error: Missing required environment variables!")
+        print("Please configure .env file. See .env.example for reference.")
+        return
+
     print(f"Starting verification code monitor...")
     print(f"  Target email: {TARGET_EMAIL}")
     print(f"  Container: {CONTAINER_NAME}")
