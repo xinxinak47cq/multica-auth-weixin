@@ -1,0 +1,8 @@
+services:
+  monitor:
+    build: .
+    container_name: multica-weixin-monitor
+    network_mode: host
+    volumes:
+      - /run/docker.sock:/run/docker.sock:ro
+    restart: unless-stopped
